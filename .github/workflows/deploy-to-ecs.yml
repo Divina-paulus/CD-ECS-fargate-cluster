@@ -25,10 +25,10 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build -t my-ecr-repo:latest .
-          docker tag my-ecr-repo:latest my-ecr-repo:latest
-          docker push my-ecr-repo:latest
+             docker build -t my-ecr-repo .
+             docker tag my-ecr-repo:latest 635491477542.dkr.ecr.us-east-1.amazonaws.com/my-ecr-repo:latest
+             docker push 635491477542.dkr.ecr.us-east-1.amazonaws.com/my-ecr-repo:latest
 
-      - name: Update Fargate service
-        run: |
-          aws ecs update-service --cluster my-fargate-cluster --service my-fargate-service --force-new-deployment
+#       - name: Update Fargate service
+#         run: |
+#           aws ecs update-service --cluster my-fargate-cluster --service my-fargate-service --force-new-deployment

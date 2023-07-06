@@ -1,0 +1,34 @@
+name: Deploy to ECS Fargate
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t my-ecr-repo:latest .
+          docker tag my-ecr-repo:latest my-ecr-repo:latest
+          docker push my-ecr-repo:latest
+
+      - name: Update Fargate service
+        run: |
+          aws ecs update-service --cluster my-fargate-cluster --service my-fargate-service --force-new-deployment
